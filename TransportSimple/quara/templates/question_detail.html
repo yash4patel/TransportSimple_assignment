@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="question-item">
+        <h2>{{ question.title }}</h2>
+        <p>{{ question.content }}</p>
+        <div class="question-meta">
+            Asked by {{ question.author.username }} on {{ question.created_at|date:"F d, Y" }}
+        </div>
+    </div>
+    
+    <h3>Answers ({{ answers|length }})</h3>
+    
+    {% if answers %}
+        {% for answer in answers %}
+            <div class="answer-item">
+                <p>{{ answer.content }}</p>
+                <div class="answer-meta">
+                    Answered by {{ answer.author.username }} on {{ answer.created_at|date:"F d, Y" }}
+                    
+                    <form method="post" action="{% url 'like_answer' answer.pk %}">
+                        {% csrf_token %}
+                        <button class="like-button" type="submit">
+                            {% if user in answer.likes.all %}
+                                ❤️ Unlike
+                            {% else %}
+                                🤍 Like
+                            {% endif %}
+                        </button>
+                        <span>{{ answer.likes.count }} like{{ answer.likes.count|pluralize }}</span>
+                    </form>
+                
+                    <!-- List users who liked -->
+                    {% if answer.likes.all %}
+                        <p><small>Liked by: {{ answer.likes.all|join:", " }}</small></p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No answers yet.</p>
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+        <div class="answer-form">
+            <h3>Your Answer</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in answer_form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}
+                            <small style="color: red;">{{ field.errors }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="submit-button">Submit Answer</button>
+            </form>
+        </div>
+    {% else %}
+        <p><a href="{% url 'login' %}">Login</a> to answer this question.</p>
+    {% endif %}
+{% endblock %}

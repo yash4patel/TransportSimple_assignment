@@ -1,0 +1,97 @@
+<!-- qapp/templates/base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quora Clone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .navbar {
+            margin-bottom: 20px;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .navbar a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #333;
+        }
+        .question-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .question-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .answer-form {
+            margin-top: 20px;
+        }
+        .answer-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .like-button {
+            background: none;
+            border: none;
+            color: blue;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+        }
+        .submit-button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'ask_question' %}">Ask Question</a>
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="submit-button" style="background:none; border:none; color:#333; cursor:pointer;">
+                    Logout ({{ user.username }})
+                </button>
+            </form>
+            
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    {% block content %}{% endblock %}
+</body>
+</html>

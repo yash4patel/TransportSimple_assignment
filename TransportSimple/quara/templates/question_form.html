@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Ask a Question</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <small style="color: red;">{{ field.errors }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="submit-button">Submit Question</button>
+    </form>
+{% endblock %}

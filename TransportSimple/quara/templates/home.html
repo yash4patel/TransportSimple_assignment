@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Recent Questions</h2>
+    
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'ask_question' %}">Ask a new question</a></p>
+    {% endif %}
+    
+    {% if questions %}
+        {% for question in questions %}
+            <div class="question-item">
+                <div class="question-title">
+                    <a href="{% url 'question_detail' question.pk %}">{{ question.title }}</a>
+                </div>
+                <div class="question-meta">
+                    Asked by {{ question.author.username }} on {{ question.created_at|date:"F d, Y" }}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No questions yet.</p>
+    {% endif %}
+{% endblock %}
